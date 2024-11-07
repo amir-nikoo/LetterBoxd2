@@ -1,0 +1,31 @@
+@model List<LetterBoxd2.Models.Movie>
+
+<table>
+    <thead>
+        <tr>
+            <th>Poster</th> <!-- Added a header for the poster -->
+            <th>Title</th>
+            <th>Genre</th>
+            <th>Release Year</th>
+            <th>Average Rating</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var movie in Model)
+        {
+            <tr>
+                <td>
+                    <img src="@movie.PosterUrl" alt="@movie.Title poster" style="width:100px;height:auto;" />
+                </td>
+                <td>@movie.Title</td>
+                <td>@movie.Genre</td>
+                <td>@movie.ReleaseYear</td>
+                <td>@movie.AverageRating</td>
+                <td>
+                    <a href="/Movies/@movie.Id">Details</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

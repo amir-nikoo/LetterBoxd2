@@ -1,0 +1,30 @@
+@{
+    ViewData["Title"] = "Login";
+}
+
+<h2>Login</h2>
+
+@if (ViewBag.ErrorMessage != null)
+{
+    <div class="alert alert-danger">
+        @ViewBag.ErrorMessage
+    </div>
+}
+
+<form method="post"> <!-- Adjust the action URL as needed -->
+    <div>
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" value="@ViewBag.Username" required />
+    </div>
+    <div>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required />
+    </div>
+    <div>
+        <button type="submit">Login</button>
+    </div>
+</form>
+
+<div>
+    <p>Don't have an account? <a href="/signup">Sign up here</a></p> <!-- Adjust the href URL to your registration page -->
+</div>
