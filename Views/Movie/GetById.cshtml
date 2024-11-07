@@ -1,0 +1,32 @@
+@model LetterBoxd2.Models.Movie
+
+<h1>@Model.Title</h1>
+<img src="@Model.PosterUrl" alt="@Model.Title Poster" style="width: 200px; height: auto;">
+<p>Genre: @Model.Genre</p>
+<p>Release Year: @Model.ReleaseYear</p>
+<p>Average Rating: @Model.AverageRating</p>
+
+<h2>Comments:</h2>
+@if (Model.Comments != null && Model.Comments.Any())
+{
+    <ul>
+        @foreach (var comment in Model.Comments)
+        {
+            <li>@comment.Content - <strong>@comment.UserName</strong></li>
+        }
+    </ul>
+}
+else
+{
+    <p>No comments yet.</p>
+}
+
+<h3>Add a Comment:</h3>
+<form asp-action="AddComment" method="post">
+    <input type="hidden" name="movieId" value="@Model.Id" />
+    <div>
+        <label for="content">Comment:</label>
+        <textarea id="content" name="content" required></textarea>
+    </div>
+    <button type="submit">Add Comment</button>
+</form>
