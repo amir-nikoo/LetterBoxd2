@@ -1,30 +1,20 @@
-@{
-    ViewData["Title"] = "Login";
-}
+@model LoginViewModel
 
-<h2>Login</h2>
+<form method="post">
+    <div class="form-group">
+        <label for="Username">Username</label>
+        <input type="text" id="Username" name="Username" class="form-control" value="@Model.Username" required />
+        @Html.ValidationMessageFor(model => model.Username, "", new { @class = "text-danger" })
+    </div>
 
-@if (ViewBag.ErrorMessage != null)
-{
-    <div class="alert alert-danger">
-        @ViewBag.ErrorMessage
+    <div class="form-group">
+        <label for="Password">Password</label>
+        <input type="password" id="Password" name="Password" class="form-control" required />
+        @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
     </div>
-}
 
-<form method="post"> <!-- Adjust the action URL as needed -->
-    <div>
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" value="@ViewBag.Username" required />
-    </div>
-    <div>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required />
-    </div>
-    <div>
-        <button type="submit">Login</button>
-    </div>
+    <button type="submit" class="btn btn-primary">Log In</button>
 </form>
 
-<div>
-    <p>Don't have an account? <a href="/signup">Sign up here</a></p> <!-- Adjust the href URL to your registration page -->
-</div>
+<!-- Display summary of errors (if any) -->
+@Html.ValidationSummary(true, "", new { @class = "text-danger" })

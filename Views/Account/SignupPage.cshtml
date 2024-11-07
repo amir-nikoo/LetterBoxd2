@@ -1,35 +1,38 @@
-@{
-    ViewData["Title"] = "SignUp";
-}
+@model SignUpViewModel
 
-<h2>SignUp</h2>
+<h2>Sign Up</h2>
 
-@if (ViewBag.ErrorMessage != null)
+<!-- Display the validation summary -->
+@if (!ViewData.ModelState.IsValid)
 {
     <div class="alert alert-danger">
-        @ViewBag.ErrorMessage
+        <ul>
+            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <li>@error.ErrorMessage</li>
+            }
+        </ul>
     </div>
 }
 
 <form method="post">
     <div class="form-group">
-        <label for="username">Username</label>
-        <input type="text" name="username" class="form-control" value="@ViewBag.Username" required />
-    </div>
-    
-    <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" name="password" class="form-control" required />
+        <label for="Username">Username</label>
+        <input type="text" id="Username" name="Username" class="form-control" value="@Model.Username" required />
+        @Html.ValidationMessageFor(m => m.Username, "", new { @class = "text-danger" })
     </div>
 
     <div class="form-group">
-        <label for="confirmPassword">Confirm Password</label>
-        <input type="password" name="confirmPassword" class="form-control" required />
+        <label for="Password">Password</label>
+        <input type="password" id="Password" name="Password" class="form-control" required />
+        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
     </div>
 
-    <button type="submit" class="btn btn-primary">Register</button>
+    <div class="form-group">
+        <label for="ConfirmPassword">Confirm Password</label>
+        <input type="password" id="ConfirmPassword" name="ConfirmPassword" class="form-control" required />
+        @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
+    </div>
+
+    <button type="submit" class="btn btn-primary">Sign Up</button>
 </form>
-
-<p>
-    Already have an account? <a href="/login">Login here</a>
-</p>

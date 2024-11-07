@@ -18,18 +18,22 @@ namespace LetterBoxd2.Controllers
         [HttpGet("login")]
         public IActionResult LogInPage()
         {
-            return View();
+            return View(new LoginViewModel());
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> LogIn(string username, string password)
+        public async Task<IActionResult> LogIn(LoginViewModel model)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(s => s.Username == username);
-            if (user == null || !BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
+            if(!ModelState.IsValid)
             {
-                ViewBag.ErrorMessage = "Invalid username or password";
-                ViewBag.Username = username;
-                return View("LoginPage");
+                return View("LoginPage", model);
+            }
+
+            var user = await _context.Users.FirstOrDefaultAsync(s => s.Username == model.Username);
+            if (user == null || !BCrypt.Net.BCrypt.Verify(model.Password, user.PasswordHash))
+            {
+                ModelState.AddModelError("", "Invalid username or password.");
+                return View("LoginPage", model);
             }
 
             return RedirectToAction("GetAll", "Movie");
@@ -38,29 +42,27 @@ namespace LetterBoxd2.Controllers
         [HttpGet("signup")]
         public IActionResult SignUpPage()
         {
-            return View();
+            return View(new SignUpViewModel());
         }
 
         [HttpPost("signup")]
-        public async Task<IActionResult> SignUp(string username, string password, string confirmPassword)
+        public async Task<IActionResult> SignUp(SignUpViewModel model)
         {
-            if(password != confirmPassword)
+            if(!ModelState.IsValid)
             {
-                ViewBag.ErrorMessage = "Passwords don't match.";
-                ViewBag.Username = username;
-                return View("SignupPage");
+                return View("SignUpPage", model);
             }
 
-            if(await _context.Users.AnyAsync(s => s.Username == username))
+            if(await _context.Users.AnyAsync(s => s.Username == model.Username))
             {
                 ViewBag.ErrorMessage = "This username is taken.";
-                ViewBag.Username = username;
+                ViewBag.Username = model.Username;
                 return View("SignupPage");
             }
 
             var newUser = new User{
-                Username = username,
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword(password)
+                Username = model.Username,
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.Password)
             };
             await _context.AddAsync(newUser);
             await _context.SaveChangesAsync();
