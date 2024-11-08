@@ -1,11 +1,13 @@
 using System.ComponentModel;
 using LetterBoxd2.Data;
 using LetterBoxd2.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace LetterBoxd2.Controllers
 {
+    [Authorize]
     public class MovieController : Controller
     {
         private readonly ApplicationDBContext _context;
@@ -18,6 +20,7 @@ namespace LetterBoxd2.Controllers
         public IActionResult GetAll()
         {
             var movies = _context.Movies.ToList();
+            ViewData["Username"] = User.Identity.Name;
             return View(movies);
         }
 

@@ -14,7 +14,10 @@
     </div>
 
     <button type="submit" class="btn btn-primary">Log In</button>
+
+    <div class="mt-2">
+        <p>Don't have an account? <a href="/signup">Sign up here</a></p>
+    </div>
 </form>
 
-<!-- Display summary of errors (if any) -->
 @Html.ValidationSummary(true, "", new { @class = "text-danger" })

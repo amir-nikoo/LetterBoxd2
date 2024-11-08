@@ -1,9 +1,17 @@
 @model List<LetterBoxd2.Models.Movie>
 
+<h3>Welcome, @User.Identity.Name</h3>
+
+<!-- Logout form -->
+<form action="/Logout" method="post" style="display:inline;">
+    @Html.AntiForgeryToken()
+    <button type="submit" class="btn btn-link">Logout</button>
+</form>
+
 <table>
     <thead>
         <tr>
-            <th>Poster</th> <!-- Added a header for the poster -->
+            <th>Poster</th>
             <th>Title</th>
             <th>Genre</th>
             <th>Release Year</th>

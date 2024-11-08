@@ -1,5 +1,6 @@
 using LetterBoxd2.Data;
 using LetterBoxd2.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,10 +8,14 @@ namespace LetterBoxd2.Controllers
 {
     public class AccountController : Controller
     {
+        private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
         private readonly ApplicationDBContext _context;
 
-        public AccountController(ApplicationDBContext context)
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, ApplicationDBContext context)
         {
+            _userManager = userManager;
+            _signInManager = signInManager;
             _context = context;
         }
 
@@ -24,19 +29,20 @@ namespace LetterBoxd2.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> LogIn(LoginViewModel model)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return View("LoginPage", model);
             }
 
-            var user = await _context.Users.FirstOrDefaultAsync(s => s.Username == model.Username);
-            if (user == null || !BCrypt.Net.BCrypt.Verify(model.Password, user.PasswordHash))
-            {
-                ModelState.AddModelError("", "Invalid username or password.");
-                return View("LoginPage", model);
-            }
+            var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberMe, false);
 
-            return RedirectToAction("GetAll", "Movie");
+            if (result.Succeeded)
+            {
+                return RedirectToAction("GetAll", "Movie");
+            }
+            
+            ModelState.AddModelError("", "Invalid username or password.");
+            return View("LoginPage", model);
         }
 
         [HttpGet("signup")]
@@ -48,25 +54,48 @@ namespace LetterBoxd2.Controllers
         [HttpPost("signup")]
         public async Task<IActionResult> SignUp(SignUpViewModel model)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
+                return View("SignupPage", model);
+            }
+
+            var userExists = await _userManager.FindByNameAsync(model.Username);
+            if (userExists != null)
+            {
+                ViewBag.ErrorMessage = "This username is already taken.";
                 return View("SignUpPage", model);
             }
 
-            if(await _context.Users.AnyAsync(s => s.Username == model.Username))
+            var newUser = new User
             {
-                ViewBag.ErrorMessage = "This username is taken.";
-                ViewBag.Username = model.Username;
-                return View("SignupPage");
-            }
-
-            var newUser = new User{
-                Username = model.Username,
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.Password)
+                UserName = model.Username,
             };
-            await _context.AddAsync(newUser);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("GetAll", "Movie");
+
+            var result = await _userManager.CreateAsync(newUser, model.Password);
+
+            if (result.Succeeded)
+            {
+                await _signInManager.SignInAsync(newUser, isPersistent: false);
+
+                return RedirectToAction("GetAll", "Movie");
+            }
+            else
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
+
+                return View("SignUpPage", model);
+            }
+        }
+
+        [HttpPost("logout")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("LoginPage", "Account");
         }
     }
 }
