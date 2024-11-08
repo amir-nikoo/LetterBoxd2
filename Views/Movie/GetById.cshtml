@@ -12,7 +12,7 @@
     <ul>
         @foreach (var comment in Model.Comments)
         {
-            <li>@comment.Content - <strong>@comment.UserName</strong></li>
+            <li>@comment.Content - <strong>@comment.Username</strong></li>
         }
     </ul>
 }
@@ -22,11 +22,35 @@ else
 }
 
 <h3>Add a Comment:</h3>
-<form asp-action="AddComment" method="post">
+<form asp-action="AddComment" method="post" asp-route-id="@Model.Id">
     <input type="hidden" name="movieId" value="@Model.Id" />
     <div>
         <label for="content">Comment:</label>
         <textarea id="content" name="content" required></textarea>
     </div>
     <button type="submit">Add Comment</button>
+</form>
+
+<h3>Rate this Movie:</h3>
+<form asp-action="RateMovie" method="post">
+    <input type="hidden" name="id" value="@Model.Id" />
+
+    <div>
+        <label for="rating">Rating (1-5):</label>
+        <!-- Stars for rating -->
+        <div class="star-rating">
+            <input type="radio" id="star1" name="rating" value="1" />
+            <label for="star1" title="1 star">&#9733;</label>
+            <input type="radio" id="star2" name="rating" value="2" />
+            <label for="star2" title="2 stars">&#9733;</label>
+            <input type="radio" id="star3" name="rating" value="3" />
+            <label for="star3" title="3 stars">&#9733;</label>
+            <input type="radio" id="star4" name="rating" value="4" />
+            <label for="star4" title="4 stars">&#9733;</label>
+            <input type="radio" id="star5" name="rating" value="5" />
+            <label for="star5" title="5 stars">&#9733;</label>
+        </div>
+    </div>
+
+    <button type="submit">Submit Rating</button>
 </form>

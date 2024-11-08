@@ -1,5 +1,6 @@
+using System.ComponentModel;
 using LetterBoxd2.Data;
-using Microsoft.AspNetCore.Http.Metadata;
+using LetterBoxd2.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,7 +24,7 @@ namespace LetterBoxd2.Controllers
         [HttpGet("movies/{id:int}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var movieTarget = await _context.Movies.FirstOrDefaultAsync(s => s.Id == id);
+            var movieTarget = await _context.Movies.Include(s => s.Comments).FirstOrDefaultAsync(s => s.Id == id);
             if(movieTarget == null)
             {
                 return NotFound("The requested movie was not found.");
@@ -31,8 +32,5 @@ namespace LetterBoxd2.Controllers
 
             return View("GetById", movieTarget);
         }
-
-        /*[HttpPost("movies/{id:int}/comments")]
-        public async Task<IActionResult> */
     }
 }

@@ -7,15 +7,21 @@ namespace LetterBoxd2.Models
         public string Genre { get;set; }
         public int ReleaseYear { get;set; }
         public List<Comment> Comments { get;set; } = new List<Comment>();
-        public double AverageRating { get;private set; } = 0.0;
-        public int NumberOfRatings { get;private set; } = 0;
         public string PosterUrl { get; set; }
+        public List<Rating> Ratings { get; set; } = new List<Rating>();
 
-        public void AddRating(double rating)
+        public double AverageRating 
         {
-            AverageRating = (AverageRating * NumberOfRatings + rating) / (NumberOfRatings + 1);
-            
-            NumberOfRatings++;
+            get
+            {
+                if (Ratings.Count == 0) return 0;
+                return Ratings.Average(r => r.Score);
+            }
+        }
+
+        public void AddRating(int rating)
+        {
+            Ratings.Add(new Rating { MovieId = this.Id, Score = rating });
         }
 
     }
