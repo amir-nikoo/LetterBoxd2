@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\LetterBoxd2.props" />
+</Project>

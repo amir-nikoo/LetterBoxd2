@@ -2,7 +2,6 @@ using LetterBoxd2.Data;
 using LetterBoxd2.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace LetterBoxd2.Controllers
 {

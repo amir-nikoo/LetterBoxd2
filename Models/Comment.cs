@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace LetterBoxd2.Models
 {
     public class Comment

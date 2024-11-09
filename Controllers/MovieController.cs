@@ -1,11 +1,8 @@
-using System.ComponentModel;
 using LetterBoxd2.Data;
 using LetterBoxd2.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.IdentityModel.Tokens;
 
 namespace LetterBoxd2.Controllers
 {
@@ -22,7 +19,6 @@ namespace LetterBoxd2.Controllers
         public IActionResult GetAll()
         {
             var movies = _context.Movies.ToList();
-            ViewData["Username"] = User.Identity.Name;
             return View(movies);
         }
 
@@ -32,29 +28,29 @@ namespace LetterBoxd2.Controllers
             var movieTarget = await _context.Movies.Include(s => s.Comments).FirstOrDefaultAsync(s => s.Id == id);
             if(movieTarget == null)
             {
-                return NotFound("The requested movie was not found.");
+                return NotFound();
             }
 
             return View(movieTarget);
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddComment(int movieId, string content)
+        public async Task<IActionResult> AddComment(CommentViewModel comment)
         {
-            if(content.Length > 50)
+            if (!ModelState.IsValid)
             {
-                return BadRequest("Too many characters");
+                return RedirectToAction("GetById", new{id = comment.MovieId});
             }
 
             var newComment = new Comment{
                 Username = User.Identity.Name,
-                Content = content,
-                MovieId = movieId
+                Content = comment.Content,
+                MovieId = comment.MovieId
             };
 
             await _context.AddAsync(newComment);
             await _context.SaveChangesAsync();
-            return RedirectToAction("GetById", "Movie", new { id = movieId});
+            return RedirectToAction("GetById", "Movie", new { id = comment.MovieId});
         }
 
         [HttpGet("movies/editcomment/{id:int}")]
@@ -63,7 +59,7 @@ namespace LetterBoxd2.Controllers
             var targetComment = await _context.Comments.FirstOrDefaultAsync(s => s.Id == id);
             if(targetComment == null)
             {
-                return BadRequest("Comment not found.");
+                return NotFound();
             }
             return View(targetComment);
         }
@@ -74,7 +70,7 @@ namespace LetterBoxd2.Controllers
             var targetComment = await _context.Comments.FirstOrDefaultAsync(s => s.Id == id);
             if(targetComment == null)
             {
-                return BadRequest("Comment not found.");
+                return NotFound();
             }
 
             targetComment.Content = content;
@@ -88,7 +84,7 @@ namespace LetterBoxd2.Controllers
             var targetComment = await _context.Comments.FirstOrDefaultAsync(s => s.Id == id);
             if(targetComment == null)
             {
-                return BadRequest("Comment not found.");
+                return NotFound();
             }
 
             _context.Remove(targetComment);
