@@ -1,0 +1,9 @@
+@model LetterBoxd2.Models.Comment
+
+<h3>Edit Comment:</h3>
+<form asp-action="EditComment" method="post" asp-route-id="@Model.Id">
+    <div>
+        <textarea id="content" name="Content" required maxlength="50">@Model.Content</textarea>
+    </div>
+    <button type="submit">Edit Comment</button>
+</form>

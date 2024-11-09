@@ -6,13 +6,25 @@
 <p>Release Year: @Model.ReleaseYear</p>
 <p>Average Rating: @Model.AverageRating</p>
 
+<a href="@Url.Action("GetAll", "Movie")" class="btn btn-primary">Back to Movies</a>
+
 <h2>Comments:</h2>
 @if (Model.Comments != null && Model.Comments.Any())
 {
     <ul>
         @foreach (var comment in Model.Comments)
         {
-            <li>@comment.Content - <strong>@comment.Username</strong></li>
+            <li>
+                <strong>@comment.Username :</strong> @comment.Content
+                @if (comment.Username == User.Identity.Name)
+                {
+                    <a asp-controller="Movie" asp-action="EditCommentPage" asp-route-id="@comment.Id">Edit</a>
+                    <form asp-controller="Movie" asp-action="DeleteComment" method="post" style="display:inline;">
+                        <input type="hidden" name="id" value="@comment.Id" />
+                        <button type="submit">Delete</button>
+                    </form>
+                }
+            </li>
         }
     </ul>
 }
@@ -23,10 +35,9 @@ else
 
 <h3>Add a Comment:</h3>
 <form asp-action="AddComment" method="post" asp-route-id="@Model.Id">
-    <input type="hidden" name="movieId" value="@Model.Id" />
+    <input type="hidden" name="MovieId" value="@Model.Id" />
     <div>
-        <label for="content">Comment:</label>
-        <textarea id="content" name="content" required></textarea>
+        <textarea id="content" name="Content" required maxlength="50"></textarea>
     </div>
     <button type="submit">Add Comment</button>
 </form>
@@ -36,21 +47,63 @@ else
     <input type="hidden" name="id" value="@Model.Id" />
 
     <div>
-        <label for="rating">Rating (1-5):</label>
-        <!-- Stars for rating -->
-        <div class="star-rating">
-            <input type="radio" id="star1" name="rating" value="1" />
-            <label for="star1" title="1 star">&#9733;</label>
-            <input type="radio" id="star2" name="rating" value="2" />
-            <label for="star2" title="2 stars">&#9733;</label>
-            <input type="radio" id="star3" name="rating" value="3" />
-            <label for="star3" title="3 stars">&#9733;</label>
-            <input type="radio" id="star4" name="rating" value="4" />
-            <label for="star4" title="4 stars">&#9733;</label>
-            <input type="radio" id="star5" name="rating" value="5" />
-            <label for="star5" title="5 stars">&#9733;</label>
+        <div class="rate">
+            <input type="radio" id="star5" name="rate" value="5" />
+            <label for="star5" title="text">5 stars</label>
+            <input type="radio" id="star4" name="rate" value="4" />
+            <label for="star4" title="text">4 stars</label>
+            <input type="radio" id="star3" name="rate" value="3" />
+            <label for="star3" title="text">3 stars</label>
+            <input type="radio" id="star2" name="rate" value="2" />
+            <label for="star2" title="text">2 stars</label>
+            <input type="radio" id="star1" name="rate" value="1" />
+            <label for="star1" title="text">1 star</label>
         </div>
     </div>
-
+    <br><br>
     <button type="submit">Submit Rating</button>
 </form>
+
+
+
+<style>
+*{
+    margin: 0;
+    padding: 0;
+}
+.rate {
+    float: left;
+    height: 46px;
+    padding: 0 10px;
+}
+.rate:not(:checked) > input {
+    position:absolute;
+    top:-9999px;
+}
+.rate:not(:checked) > label {
+    float:right;
+    width:1em;
+    overflow:hidden;
+    white-space:nowrap;
+    cursor:pointer;
+    font-size:30px;
+    color:#ccc;
+}
+.rate:not(:checked) > label:before {
+    content: '★ ';
+}
+.rate > input:checked ~ label {
+    color: #ffc700;    
+}
+.rate:not(:checked) > label:hover,
+.rate:not(:checked) > label:hover ~ label {
+    color: #deb217;  
+}
+.rate > input:checked + label:hover,
+.rate > input:checked + label:hover ~ label,
+.rate > input:checked ~ label:hover,
+.rate > input:checked ~ label:hover ~ label,
+.rate > label:hover ~ input:checked ~ label {
+    color: #c59b08;
+}
+</style>

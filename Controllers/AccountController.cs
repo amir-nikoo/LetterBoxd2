@@ -54,16 +54,16 @@ namespace LetterBoxd2.Controllers
         [HttpPost("signup")]
         public async Task<IActionResult> SignUp(SignUpViewModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return View("SignupPage", model);
-            }
-
             var userExists = await _userManager.FindByNameAsync(model.Username);
             if (userExists != null)
             {
-                ViewBag.ErrorMessage = "This username is already taken.";
+                ModelState.AddModelError("Username", "This username is already taken.");
                 return View("SignUpPage", model);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View("SignupPage", model);
             }
 
             var newUser = new User
