@@ -146,3 +146,4 @@ C:\Users\ASUS\Desktop\C#_tutorial\LetterBoxd2\letterboxd2\bin\Debug\net8.0\runti
 C:\Users\ASUS\Desktop\C#_tutorial\LetterBoxd2\letterboxd2\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
 C:\Users\ASUS\Desktop\C#_tutorial\LetterBoxd2\letterboxd2\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
 C:\Users\ASUS\Desktop\C#_tutorial\LetterBoxd2\letterboxd2\bin\Debug\net8.0\BCrypt.Net-Next.dll
+C:\Users\ASUS\Desktop\C#_tutorial\LetterBoxd2\letterboxd2\obj\Debug\net8.0\LetterBoxd2.sourcelink.json
